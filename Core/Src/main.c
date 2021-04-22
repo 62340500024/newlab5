@@ -38,7 +38,7 @@ uint64_t micros();
 void encoderSpeedReaderCycle();
 uint64_t timestamp = 0;
 uint64_t i=0;
-uint64_t PWM = 0;
+float PWM = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -86,7 +86,7 @@ int main(void)
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim5);
-  HAL_TIM_Base_Start(&htim2);
+//  HAL_TIM_Base_Start(&htim2);
   	HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t*) &capturedata,CAPTURENUM);
 
   /* USER CODE END 2 */
@@ -95,7 +95,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while(1){
 	    encoderSpeedReaderCycle();
-	    if(micros()-timestamp > 200000){
+	    if(micros()-timestamp > 100000){
 	  	  timestamp = micros();
 	  	  HAL_GPIO_TogglePin(LD2_GPIO_Port,LD2_Pin);
 	    }
@@ -349,7 +349,7 @@ void encoderSpeedReaderCycle() {
 
 	//mean all 15 Diff
 	MeanTime =sum / (float)(CAPTURENUM-1);
-	PWM = (MeanTime * (5000000/64));
+	PWM = ((5000000/(64*MeanTime)));
 }
 uint64_t micros()
 {
